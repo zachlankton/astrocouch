@@ -11,7 +11,8 @@
     "prepare": "husky install"
   },
   "devDependencies": {
-    "astro": "^1.0.6",
+    "@astrojs/node": "^1.0.1",
+    "astro": "^1.2.2",
     "husky": "^8.0.0",
     "pretty-quick": "^3.1.3"
   }
