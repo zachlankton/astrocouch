@@ -12,8 +12,8 @@
       "VARIANT": "3.2"
     }
   },
-  "workspaceMount": "target=/workspaces/astro-couch,type=volume",
-  "workspaceFolder": "/workspaces/astro-couch",
+  "workspaceMount": "target=/workspaces/astrocouch,type=volume",
+  "workspaceFolder": "/workspaces/astrocouch",
   // Configure tool-specific properties.
   "customizations": {
     // Configure properties specific to VS Code.
