@@ -14,8 +14,8 @@ COPY ./.devcontainer/couchdb.local.ini /opt/couchdb/etc/local.ini
 
 # These lines are necessary if the user has cloned the repo to their local machine
 # and clicked the "Reopen in container button"
-RUN mkdir -p /workspaces/astro-couch
-WORKDIR /workspaces/astro-couch
+RUN mkdir -p /workspaces/astrocouch
+WORKDIR /workspaces/astrocouch
 COPY . .
 
 # [Optional] Uncomment this section to install additional OS packages.
