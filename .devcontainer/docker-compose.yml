@@ -3,30 +3,16 @@ version: "3"
 services:
   astrocouch:
     image: zachlankton/astrocouch
-    container_name: astrocouch
-    restart: always
     command: /bin/sh -c "while sleep 1000; do :; done"
+    network_mode: service:couchdb
     depends_on:
       - couchdb
-    # ports:
-    #   - "3000:3000"
-    # volumes:
-    #   - astrocouch:/workspaces/astrocouch
 
   couchdb:
     image: couchdb:3.2
-    container_name: couchdb
-    restart: always
-    # volumes:
-    #   - couchdb:/opt/couchdb/data
     environment:
       - COUCHDB_USER=admin
       - COUCHDB_PASSWORD=admin
       - COUCHDB_SECRET=superSensitiveSecret
       - NODENAME=node
       - ERL_FLAGS=-setcookie "brumbrum"
-# volumes:
-#   astrocouch:
-#     driver: local
-#   couchdb:
-#     driver: local

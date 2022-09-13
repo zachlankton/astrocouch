@@ -12,7 +12,7 @@
   //     "VARIANT": "3.2"
   //   }
   // },
-  "dockerComposeFile": "../docker-compose.yml",
+  "dockerComposeFile": "./docker-compose.yml",
   "service": "astrocouch",
   "workspaceFolder": "/workspaces/astrocouch",
   "shutdownAction": "stopCompose",
