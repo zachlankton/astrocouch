@@ -1,5 +1,5 @@
 #!/bin/bash
 
 npm ci
-npm prepare
+npm run prepare
 pwd
