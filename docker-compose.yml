@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  astrocouch:
+    image: node:18
+    container_name: astrocouch
+    restart: always
+    depends_on:
+      - couchdb
+    ports:
+      # The HTTP port
+      - "3000:3000"
+    volumes:
+      - astrocouch:/workspaces/astrocouch
+
+  couchdb:
+    image: couchdb:3.2
+    container_name: couchdb
+    restart: always
+    volumes:
+      - couchdb::/opt/couchdb/data
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASS=admin
+      - COUCHDB_SECRET=superSensitiveSecret
+      - NODENAME=node
+      - ERL_FLAGS=-setcookie "brumbrum"
+
+volumes:
+  astrocouch:
+    driver: local
+  couchdb:
+    driver: local
