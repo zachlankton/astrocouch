@@ -18,7 +18,7 @@ services:
     container_name: couchdb
     restart: always
     volumes:
-      - couchdb::/opt/couchdb/data
+      - couchdb:/opt/couchdb/data
     environment:
       - COUCHDB_USER=admin
       - COUCHDB_PASS=admin
