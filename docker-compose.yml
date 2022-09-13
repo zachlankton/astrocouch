@@ -5,6 +5,7 @@ services:
     image: node:18
     container_name: astrocouch
     restart: always
+    command: /bin/sh -c "while sleep 1000; do :; done"
     depends_on:
       - couchdb
     ports:
@@ -21,7 +22,7 @@ services:
       - couchdb:/opt/couchdb/data
     environment:
       - COUCHDB_USER=admin
-      - COUCHDB_PASS=admin
+      - COUCHDB_PASSWORD=admin
       - COUCHDB_SECRET=superSensitiveSecret
       - NODENAME=node
       - ERL_FLAGS=-setcookie "brumbrum"
