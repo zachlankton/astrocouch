@@ -2,4 +2,4 @@
 
 npm ci
 npm run prepare
-pwd
+./.devcontainer/seed_db.sh
