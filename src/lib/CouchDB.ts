@@ -185,7 +185,8 @@ class CouchDB {
     Log({ msg: "PUT Doc.", dbUrl: this.#dbUrl }, LogLevel.INFO);
     Log({ msg: "Doc", doc }, LogLevel.DEBUG);
 
-    if (!doc._id) throw "Doc needs an _id property";
+    if (!doc._id && !doc.id) throw "Doc needs an id property";
+    if (doc.id) doc._id = doc.id;
 
     const existingDoc = await this.getDoc(doc._id);
     if (!existingDoc.error) doc._rev = existingDoc._rev;
