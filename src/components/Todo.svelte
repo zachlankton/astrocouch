@@ -25,8 +25,10 @@
     }
   };
 
-  window.addEventListener("hashchange", updateView);
-  updateView();
+  if (window) {
+    window.addEventListener("hashchange", updateView);
+    updateView();
+  }
 
   async function clearCompleted() {
     const itemsToDelete = items.filter((item) => item.completed);
@@ -243,7 +245,7 @@
 
   .todoapp {
     background: #fff;
-    margin: 200px 0 40px 0;
+    margin: 100px 0 40px 0;
     position: relative;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
   }

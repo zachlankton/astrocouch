@@ -11,6 +11,7 @@ import Todo from "../components/Todo.svelte";
       Check out the <code>src/pages</code> directory to get started.<br />
       <strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
     </p>
+    <Todo client:only="svelte" />
     <ul role="list" class="link-card-grid">
       <Card
         href="http://localhost:5984/_utils"
@@ -18,7 +19,7 @@ import Todo from "../components/Todo.svelte";
         body="A Quick Link to the CouchDB Admin UI. User and Password are 'admin'"
       />
       <Card
-        href="http://localhost:3000/api/dbInfo"
+        href="/api/dbInfo"
         title="API Test"
         body="A Link to an Astro API route that fetches from CouchDB"
       />
@@ -43,7 +44,7 @@ import Todo from "../components/Todo.svelte";
         body="Come say hi to our amazing Discord community. ❤️"
       />
     </ul>
-    <Todo client:only />
+    
   </main>
 </Layout>
 
