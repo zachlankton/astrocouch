@@ -8,10 +8,14 @@
     "build": "astro build",
     "preview": "node preview-server.mjs",
     "astro": "astro",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "playwright test",
+    "test:trace": "playwright test --trace on",
+    "report": "playwright show-report"
   },
   "devDependencies": {
     "@astrojs/node": "^1.0.1",
+    "@playwright/test": "^1.25.2",
     "astro": "^1.2.6",
     "husky": "^8.0.0",
     "pretty-quick": "^3.1.3"

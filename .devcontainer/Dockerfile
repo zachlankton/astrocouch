@@ -9,6 +9,10 @@ RUN echo "PS1='\${debian_chroot:+(\$debian_chroot)}\[\033[01;32m\]\u@\[\033[00m\
 
 RUN apt update && apt upgrade -y
 
+# Install PlayWright and Dependencies
+RUN npx -q playwright install \
+     && npx playwright install-deps
+
 RUN mkdir -p /workspaces/astrocouch
 WORKDIR /workspaces/astrocouch
 COPY . .
