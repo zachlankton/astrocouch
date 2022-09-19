@@ -13,7 +13,8 @@
         "dbaeumer.vscode-eslint",
         "astro-build.astro-vscode",
         "esbenp.prettier-vscode",
-        "svelte.svelte-vscode"
+        "svelte.svelte-vscode",
+        "ms-playwright.playwright"
       ]
     }
   },
