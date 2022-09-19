@@ -1,5 +1,8 @@
 # Welcome to AstroCouch
 
+[![Playwright Tests](https://github.com/zachlankton/astrocouch/actions/workflows/playwright.yml/badge.svg?branch=main)](https://github.com/zachlankton/astrocouch/actions/workflows/playwright.yml)
+[![CodeQL](https://github.com/zachlankton/astrocouch/actions/workflows/codeql-analysis.yml/badge.svg?branch=main)](https://github.com/zachlankton/astrocouch/actions/workflows/codeql-analysis.yml)
+
 A quick start astro dev environment with couchdb.
 
 ## Quick Start
