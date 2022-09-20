@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("homepage has Playwright in title and get started link linking to the intro page", async ({
+test("homepage has Astro in title and CouchDB UI link linking to the CouchDB Admin Page", async ({
   page,
 }) => {
   await page.goto("/");
@@ -24,4 +24,17 @@ test("homepage has Playwright in title and get started link linking to the intro
 
   // Expects the URL to contain intro.
   await expect(page).toHaveURL(/.*utils/);
+});
+
+test("Test CouchDB UI can login", async ({ page }) => {
+  await page.goto("http://localhost:5984/_utils");
+
+  // login to
+  await page.locator("#username").fill("admin");
+  await page.locator("#password").fill("admin");
+  await page.locator("#password").press("Enter");
+
+  const LogOutButton = page.locator("text=Log Out").first();
+
+  await expect(LogOutButton).toBeVisible();
 });
