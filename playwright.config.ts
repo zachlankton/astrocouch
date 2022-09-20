@@ -58,6 +58,7 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices["Desktop Firefox"],
       },
+      testIgnore: "demo-todo-app.spec.ts",
     },
 
     {
@@ -65,6 +66,7 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices["Desktop Safari"],
       },
+      testIgnore: "demo-todo-app.spec.ts",
     },
 
     /* Test against mobile viewports. */
