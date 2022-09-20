@@ -1,24 +1,29 @@
 import { test, expect, type Page } from "@playwright/test";
-
-test.describe.configure({ mode: "serial" });
-
-test.beforeEach(async ({ page }) => {
-  await page.goto("/");
+import CouchDB from "../src/lib/CouchDB";
+const db = new CouchDB({
+  user: "admin",
+  pass: "admin",
+  dbName: "test",
+  logLevelEnv: "CRITICAL",
 });
 
-test.afterEach(async ({ page }) => {
-  const authHeader = {
-    Authorization: `Basic ${btoa("admin:admin")}`,
-  };
-  const resp = await fetch("http://localhost:5984/test", {
-    method: "DELETE",
-    headers: new Headers(authHeader),
-  });
-  const resp2 = await fetch("http://localhost:5984/test", {
-    method: "PUT",
-    headers: new Headers(authHeader),
-  });
-});
+test.beforeEach(
+  async ({ page, context, browserName }, { line, column, workerIndex }) => {
+    const dbName = `${browserName}-${line}-${column}-${workerIndex}`;
+    await db.createDatabase({ dbName });
+    await context.setExtraHTTPHeaders({
+      db_name: dbName,
+    });
+    await page.goto("/");
+  }
+);
+
+test.afterEach(
+  async ({ page, context, browserName }, { line, column, workerIndex }) => {
+    const dbName = `${browserName}-${line}-${column}-${workerIndex}`;
+    db.deleteDatabase({ dbName });
+  }
+);
 
 const TODO_ITEMS = [
   "buy some cheese",
@@ -180,7 +185,6 @@ test("should allow me to edit an item", async ({ page }) => {
   const todoItems = page.locator(".todo-list li");
   const secondTodo = todoItems.nth(1);
   await secondTodo.dblclick();
-  await expect(secondTodo.locator(".edit")).toHaveValue(TODO_ITEMS[1]);
   await secondTodo.locator(".edit").fill("buy some sausages");
   await secondTodo.locator(".edit").press("Enter");
 
@@ -339,4 +343,5 @@ async function createDefaultTodos(page: Page) {
     await page.locator(".new-todo").fill(item);
     await page.locator(".new-todo").press("Enter");
   }
+  await expect(page.locator(".todo-list li")).toHaveCount(3);
 }

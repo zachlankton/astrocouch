@@ -2,7 +2,7 @@ interface ImportMetaEnv {
   // CouchDB Variables
   readonly DB_SSL: string;
   readonly DB_DOMAIN: string;
-  readonly DB_PORT: number;
+  readonly DB_PORT: string;
   readonly DB_NAME: string;
   readonly DB_PASS: string;
   readonly DB_USER: string;
