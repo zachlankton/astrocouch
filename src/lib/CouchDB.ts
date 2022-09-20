@@ -1,4 +1,4 @@
-import Log, { LogLevel } from "./Logger";
+import Logger, { LogLevel } from "./Logger";
 
 interface dbUrlOptsIF {
   scheme?: string;
@@ -7,6 +7,7 @@ interface dbUrlOptsIF {
   dbName?: string;
   user?: string;
   pass?: string;
+  logLevelEnv?: string;
 }
 
 interface authHeaderIF {
@@ -23,49 +24,64 @@ class CouchDB {
   #baseUrl: string;
   #dbUrl: string;
   #authHeader: authHeaderIF;
+  #user: string;
+  #pass: string;
+  #scheme: string;
+  #domain: string;
+  #dbName: string;
+  #port: string;
+  #Logger: any;
 
   constructor(options?: dbUrlOptsIF) {
-    this.#urlOpts = this.#getDbUrlOpts(options);
-    this.#baseUrl = this.#getBaseUrl(this.#urlOpts);
-    this.#dbUrl = this.#getDbUrl(this.#urlOpts);
-    this.#authHeader = this.#getAuthHeader(this.#urlOpts);
-    this.#createDatabase();
+    const logLevelEnv = options.logLevelEnv || "DEBUG";
+    this.#Logger = new Logger(logLevelEnv);
+    const params = this.#getDbParams(options);
+    this.#urlOpts = params.urlOpts;
+    this.#user = params.urlOpts.user;
+    this.#pass = params.urlOpts.pass;
+    this.#scheme = params.urlOpts.scheme;
+    this.#domain = params.urlOpts.domain;
+    this.#port = params.urlOpts.port;
+    this.#dbName = params.urlOpts.dbName;
+    this.#baseUrl = params.baseUrl;
+    this.#dbUrl = params.dbUrl;
+    this.#authHeader = params.authHeader;
+    this.createDatabase();
+  }
+
+  #getDbParams(options?: dbUrlOptsIF) {
+    const urlOpts = this.#getDbUrlOpts(options);
+    const baseUrl = this.#getBaseUrl(urlOpts);
+    const dbUrl = this.#getDbUrl(urlOpts);
+    const authHeader = this.#getAuthHeader(urlOpts);
+    return { urlOpts, baseUrl, dbUrl, authHeader };
   }
 
   #getDbUrlOpts(options?: dbUrlOptsIF): dbUrlOptsIF {
-    // get defaults from environment
-    const _scheme = import.meta.env.DB_SSL === "true" ? "https" : "http";
-    const _dbDomain = import.meta.env.DB_DOMAIN;
-    const _dbPort = import.meta.env.DB_PORT
-      ? ":" + import.meta.env.DB_PORT
-      : "";
-    const _dbName = import.meta.env.DB_NAME;
-    const _dbUser = import.meta.env.DB_USER;
-    const _dbPass = import.meta.env.DB_PASS;
-
-    if (!options?.user && !_dbUser)
+    if (!options?.user && !this.#user)
       throw "dbUrlOpts requires a 'user' property to be set either explicity or from the environment as DB_USER";
 
-    if (!options?.pass && !_dbPass)
+    if (!options?.pass && !this.#pass)
       throw "dbUrlOpts requires a 'pass' property to be set either explicity or from the environment as DB_PASS";
 
-    if (!options?.dbName && !_dbName)
+    if (!options?.dbName && !this.#dbName)
       throw "dbUrlOpts requires a 'dbName' property to be set either explicity or from the environment as DB_NAME";
 
     const dbUrlOpts: dbUrlOptsIF = {
-      scheme: options?.scheme || _scheme || "http",
-      domain: options?.domain || _dbDomain || "localhost",
-      port: options?.port || _dbPort || "5984",
-      dbName: options?.dbName || _dbName,
-      user: options?.user || _dbUser,
-      pass: options?.pass || _dbPass,
+      scheme: options?.scheme || this.#scheme || "http",
+      domain: options?.domain || this.#domain || "localhost",
+      port: options?.port || this.#port || "5984",
+      dbName: options?.dbName || this.#dbName,
+      user: options?.user || this.#user,
+      pass: options?.pass || this.#pass,
     };
 
     return dbUrlOpts;
   }
 
   #getBaseUrl(options?: dbUrlOptsIF): string {
-    const baseUrl = `${options.scheme}://${options.domain}${options.port}`;
+    const port = options?.port ? `:${options.port}` : "";
+    const baseUrl = `${options.scheme}://${options.domain}${port}`;
     return baseUrl;
   }
 
@@ -82,46 +98,67 @@ class CouchDB {
     return authHeader;
   }
 
-  async #createDatabase() {
-    Log(
-      { msg: "Creating Database if not exists.", dbUrl: this.#dbUrl },
+  async createDatabase(options?: dbUrlOptsIF) {
+    const { dbUrl, authHeader } = this.#getDbParams(options);
+
+    this.#Logger.Log(
+      { msg: "Creating Database if not exists.", dbUrl },
       LogLevel.INFO
     );
 
-    const resp = await fetch(this.#dbUrl, {
+    const resp = await fetch(dbUrl, {
       method: "PUT",
       headers: new Headers({
-        ...this.#authHeader,
+        ...authHeader,
       }),
     });
     const data = await resp.json();
     return data;
   }
 
-  async getCouchDbInfo() {
-    Log(
-      { msg: "Getting Couch Installation Info.", baseUrl: this.#baseUrl },
+  async deleteDatabase(options?: dbUrlOptsIF) {
+    const { dbUrl, authHeader } = this.#getDbParams(options);
+
+    this.#Logger.Log({ msg: "Deleting Database.", dbUrl }, LogLevel.INFO);
+
+    const resp = await fetch(dbUrl, {
+      method: "DELETE",
+      headers: new Headers({
+        ...authHeader,
+      }),
+    });
+    const data = await resp.json();
+    return data;
+  }
+
+  async getCouchDbInfo(options?: dbUrlOptsIF) {
+    const { baseUrl, authHeader } = this.#getDbParams(options);
+
+    this.#Logger.Log(
+      { msg: "Getting Couch Installation Info.", baseUrl },
       LogLevel.INFO
     );
-    const resp = await fetch(this.#baseUrl, {
+    const resp = await fetch(baseUrl, {
       headers: new Headers({
-        ...this.#authHeader,
+        ...authHeader,
       }),
     });
     const data = await resp.json();
     return data;
   }
 
-  async getDbInfo() {
-    Log({ msg: "Getting DB Info.", dbUrl: this.#dbUrl }, LogLevel.INFO);
+  async getDbInfo(options?: dbUrlOptsIF) {
+    const { dbUrl, authHeader } = this.#getDbParams(options);
 
-    const resp = await fetch(this.#dbUrl, {
+    this.#Logger.Log({ msg: "Getting DB Info.", dbUrl }, LogLevel.INFO);
+
+    const resp = await fetch(dbUrl, {
       headers: new Headers({
-        ...this.#authHeader,
+        ...authHeader,
       }),
     });
 
-    Log({ msg: "getDbInfo Response", resp }, LogLevel.DEBUG);
+    this.#Logger.Log({ msg: "getDbInfo Response", resp }, LogLevel.DEBUG);
 
     const data = await resp.json();
     return data;
@@ -131,16 +168,18 @@ class CouchDB {
    * Get all the documents in the database
    * @returns - an array of documents
    */
-  async allDocs() {
-    Log({ msg: "Getting All Docs.", dbUrl: this.#dbUrl }, LogLevel.INFO);
+  async allDocs(options?: dbUrlOptsIF) {
+    const { dbUrl, authHeader } = this.#getDbParams(options);
 
-    const resp = await fetch(this.#dbUrl + "/_all_docs?include_docs=true", {
+    this.#Logger.Log({ msg: "Getting All Docs.", dbUrl }, LogLevel.INFO);
+
+    const resp = await fetch(dbUrl + "/_all_docs?include_docs=true", {
       headers: new Headers({
-        ...this.#authHeader,
+        ...authHeader,
       }),
     });
 
-    Log({ msg: "allDocs Response", resp }, LogLevel.DEBUG);
+    this.#Logger.Log({ msg: "allDocs Response", resp }, LogLevel.DEBUG);
 
     const data = await resp.json();
     return data.rows.map((row) => row.doc);
@@ -151,16 +190,18 @@ class CouchDB {
    * @param id - the id of the document to retrieve
    * @returns - the document object
    */
-  async getDoc(id: string) {
-    Log({ msg: "Get Doc.", id }, LogLevel.INFO);
+  async getDoc(id: string, options?: dbUrlOptsIF) {
+    const { dbUrl, authHeader } = this.#getDbParams(options);
 
-    const resp = await fetch(this.#dbUrl + "/" + id, {
+    this.#Logger.Log({ msg: "Get Doc.", id }, LogLevel.INFO);
+
+    const resp = await fetch(dbUrl + "/" + id, {
       headers: new Headers({
-        ...this.#authHeader,
+        ...authHeader,
       }),
     });
 
-    Log({ msg: "Get Doc Response", resp }, LogLevel.DEBUG);
+    this.#Logger.Log({ msg: "Get Doc Response", resp }, LogLevel.DEBUG);
 
     const data = await resp.json();
     return data;
@@ -181,9 +222,11 @@ class CouchDB {
    *
    * @returns a response object
    */
-  async upsertDoc(doc) {
-    Log({ msg: "PUT Doc.", dbUrl: this.#dbUrl }, LogLevel.INFO);
-    Log({ msg: "Doc", doc }, LogLevel.DEBUG);
+  async upsertDoc(doc, options?: dbUrlOptsIF) {
+    const { dbUrl, authHeader } = this.#getDbParams(options);
+
+    this.#Logger.Log({ msg: "PUT Doc.", dbUrl }, LogLevel.INFO);
+    this.#Logger.Log({ msg: "Doc", doc }, LogLevel.DEBUG);
 
     if (!doc._id && !doc.id) throw "Doc needs an id property";
     if (doc.id) doc._id = doc.id;
@@ -191,16 +234,16 @@ class CouchDB {
     const existingDoc = await this.getDoc(doc._id);
     if (!existingDoc.error) doc._rev = existingDoc._rev;
 
-    const resp = await fetch(this.#dbUrl, {
+    const resp = await fetch(dbUrl, {
       method: "POST",
       headers: new Headers({
         "Content-Type": "application/json",
-        ...this.#authHeader,
+        ...authHeader,
       }),
       body: JSON.stringify(doc),
     });
 
-    Log({ msg: "upsertDoc Response", resp }, LogLevel.DEBUG);
+    this.#Logger.Log({ msg: "upsertDoc Response", resp }, LogLevel.DEBUG);
 
     const data = await resp.json();
     return data;
