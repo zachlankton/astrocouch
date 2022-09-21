@@ -1,11 +1,35 @@
 import { test, expect, type Page } from "@playwright/test";
+const v8toIstanbul = require("v8-to-istanbul");
 import CouchDB from "../src/lib/CouchDB";
+import * as fs from "fs";
 const db = new CouchDB({
   user: "admin",
   pass: "admin",
   dbName: "test",
   logLevelEnv: "CRITICAL",
 });
+
+// These before and afters will be used to facilitate playwright test coverage
+
+// test.beforeEach(async ({page}) => {
+//   await page.coverage.startJSCoverage();
+// })
+
+// test.afterEach(async ({ page, browserName }, { line, column, workerIndex }) =>{
+//   const coverage = await page.coverage.stopJSCoverage();
+//   for (const [index, entry] of coverage.entries()) {
+//     const {pathname} = new URL(entry.url);
+//     console.log(pathname);
+//     if (!pathname.startsWith("/@fs/workspaces/astrocouch/src")) continue;
+//     const converter = v8toIstanbul("." + pathname.replace("/@fs/workspaces/astrocouch", ""), 0, { source: entry.source });
+//     await converter.load();
+//     converter.applyCoverage(entry.functions);
+//     // console.log(JSON.stringify(converter.toIstanbul()));
+//     const dbName = `${browserName}-${line}-${column}-${workerIndex}-${index}`;
+//     fs.appendFileSync("testc8/" + dbName, JSON.stringify(converter.toIstanbul()));
+
+//   }
+// })
 
 test.beforeEach(
   async ({ page, context, browserName }, { line, column, workerIndex }) => {

@@ -13,6 +13,8 @@ RUN apt update && apt upgrade -y
 RUN npx -q playwright install \
      && npx playwright install-deps
 
+RUN apt install rsync
+
 RUN mkdir -p /workspaces/astrocouch
 WORKDIR /workspaces/astrocouch
 COPY . .
