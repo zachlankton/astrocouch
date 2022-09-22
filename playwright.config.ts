@@ -11,7 +11,7 @@ import { devices } from "@playwright/test";
  * See https://playwright.dev/docs/test-configuration.
  */
 const config: PlaywrightTestConfig = {
-  testDir: "./tests",
+  testDir: "./tests_playwright",
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
   expect: {
@@ -101,7 +101,7 @@ const config: PlaywrightTestConfig = {
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: "npm run start",
+    command: "./pw-run-tests.sh",
     port: 3000,
   },
 };

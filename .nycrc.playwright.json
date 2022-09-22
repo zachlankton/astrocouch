@@ -1,0 +1,7 @@
+{
+  "all": true,
+  "instrument": false,
+  "temp-dir": "astro-api-coverage",
+  "reporter": ["json"],
+  "report-dir": "astro-api-report"
+}

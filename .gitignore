@@ -21,3 +21,10 @@ pnpm-debug.log*
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+# Testing
+INSTRUMENTED_SRC/
+coverage-jest/
+astro-api-coverage/
+astro-api-report/
+
