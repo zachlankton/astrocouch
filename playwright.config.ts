@@ -101,7 +101,7 @@ const config: PlaywrightTestConfig = {
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: "./pw-run-tests.sh",
+    command: "./pw-run-test-server.sh",
     port: 3000,
   },
 };
