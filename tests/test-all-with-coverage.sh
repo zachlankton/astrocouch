@@ -98,7 +98,7 @@ rm -rf ./tests/coverage-jest
 rm -rf ./merge-coverage
 
 echo "Running Coverage Report lcov."
-npx nyc report --reporter=lcov
+npx nyc report -e .js -e .ts -e .jsx -e .tsx -e .svelte
 
 echo
 echo "DONE!!!"

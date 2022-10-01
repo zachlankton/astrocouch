@@ -49,7 +49,9 @@ jobs:
         run: npm run test:coverage
       - name: Download CodeCov Uploader
         run: curl -Os https://uploader.codecov.io/latest/linux/codecov && chmod +x codecov
-      - name: Upload Code Coverage
+      - name: Generate The Report
+        run: npx nyc report --reporter=lcov -e .js -e .ts -e .jsx -e .tsx -e .svelte
+      - name: Upload Coverage to CodeCov
         run: ./codecov
       # - uses: actions/upload-artifact@v2
       #   if: always()
