@@ -1,5 +1,9 @@
 import { test, expect, type Page } from "@playwright/test";
-import CouchDB from "../src/lib/CouchDB";
+const v8toIstanbul = require("v8-to-istanbul");
+import * as fs from "fs";
+import init_coverage from "./coverage";
+init_coverage(test);
+import CouchDB from "../../src/lib/CouchDB";
 const db = new CouchDB({
   user: "admin",
   pass: "admin",
