@@ -97,8 +97,8 @@ rm -rf ./INSTRUMENTED_SRC
 rm -rf ./tests/coverage-jest
 rm -rf ./merge-coverage
 
-echo
-npx nyc report
+echo "Running Coverage Report lcov."
+npx nyc report --reporter=lcov
 
 echo
 echo "DONE!!!"
