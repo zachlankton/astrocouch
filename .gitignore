@@ -27,4 +27,7 @@ INSTRUMENTED_SRC/
 coverage-jest/
 astro-api-coverage/
 astro-api-report/
+merge-coverage/
+coverage/
+.nyc_output/
 

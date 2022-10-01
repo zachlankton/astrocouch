@@ -3,16 +3,20 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "couchdb": "./.devcontainer/runJustCouchDB.sh",
+    "seed": "./.devcontainer/seed_db.sh",
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
     "preview": "node preview-server.mjs",
     "astro": "astro",
     "prepare": "husky install",
-    "test:jest": "jest",
-    "test:pw": "playwright test && ./pw-cleanup.sh",
+    "test:jest": "jest --config ./tests/jest.config.js",
+    "test:pw": "playwright test --config ./tests/playwright.config.ts",
     "test:pw:trace": "playwright test --trace on",
-    "test:all": "jest && npm run test:pw && ./mergeAllCoverage.sh",
+    "test:all": "jest && npm run test:pw",
+    "test:coverage": "./tests/test-all-with-coverage.sh",
+    "test:cleanup": "./tests/test-cleanup.sh",
     "report": "playwright show-report"
   },
   "devDependencies": {
