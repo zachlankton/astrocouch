@@ -31,6 +31,6 @@
   "dependencies": {
     "@astrojs/svelte": "^1.0.1",
     "express": "^4.18.1",
-    "svelte": "^3.50.1"
+    "svelte": "^3.53.1"
   }
 }
